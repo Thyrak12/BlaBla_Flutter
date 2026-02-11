@@ -50,7 +50,7 @@ class RidePrefsScreen extends StatelessWidget {
             children: [
 
               // 2 - THE FORM
-              RidePrefForm(initRidePref: RidePrefsService.selectedRidePref),
+              RidePrefForm(initRidePref: RidePrefService.currentRidePref),
               SizedBox(height: BlaSpacings.m),
 
               // 3 - THE HISTORY 
@@ -59,11 +59,11 @@ class RidePrefsScreen extends StatelessWidget {
                 child: ListView.builder(
                   shrinkWrap: true, // Fix ListView height issue
                   physics: AlwaysScrollableScrollPhysics(),
-                  itemCount: RidePrefsService.ridePrefsHistory.length,
+                  itemCount: RidePrefService.ridePrefsHistory.length,
                   itemBuilder: (ctx, index) => RidePrefsTile(
-                    ridePref: RidePrefsService.ridePrefsHistory[index],
+                    ridePref: RidePrefService.ridePrefsHistory[index],
                     onPressed: () => onRidePrefSelected(
-                      RidePrefsService.ridePrefsHistory[index],
+                      RidePrefService.ridePrefsHistory[index],
                     ),
                   ),
                 ),
