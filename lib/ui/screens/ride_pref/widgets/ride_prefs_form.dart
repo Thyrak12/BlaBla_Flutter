@@ -1,8 +1,10 @@
 import 'package:blablacar/data/dummy_data.dart';
 import 'package:blablacar/ui/screens/ride_pref/widgets/form/location_search.dart';
+import 'package:blablacar/ui/screens/ride_pref/widgets/form/seat_picker.dart';
 import 'package:blablacar/ui/widgets/actions/bla_button.dart';
 import 'package:blablacar/ui/widgets/actions/bla_input.dart';
 import 'package:blablacar/ui/widgets/display/bla_divider.dart';
+import 'package:blablacar/ui/widgets/display/ride_result.dart';
 import 'package:blablacar/utils/date_time_utils.dart';
 import 'package:flutter/material.dart';
 
@@ -29,7 +31,6 @@ class RidePrefForm extends StatefulWidget {
 }
 
 class _RidePrefFormState extends State<RidePrefForm> {
-  final _formKey = GlobalKey<FormState>();
   Location? departure;
   late DateTime departureDate;
   Location? arrival;
@@ -65,27 +66,6 @@ class _RidePrefFormState extends State<RidePrefForm> {
   // ----------------------------------
   // Compute the widgets rendering
   // ----------------------------------
-
-  Widget _buildSearchButton() {
-    return Container(
-      height: 55,
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: Colors.lightBlueAccent,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: const Center(
-        child: Text(
-          "Search",
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-      ),
-    );
-  }
 
   // ----------------------------------
   // Build the widgets
@@ -142,9 +122,7 @@ class _RidePrefFormState extends State<RidePrefForm> {
         BlaInput(
           icon: Icons.calendar_month_outlined,
           text: DateTimeUtils.formatDateTime(departureDate),
-          onTap: () {
-
-          },
+          onTap: () {},
         ),
 
         BlaDivider(),
@@ -153,8 +131,18 @@ class _RidePrefFormState extends State<RidePrefForm> {
         BlaInput(
           icon: Icons.person_outline,
           text: "$requestedSeats",
-          onTap: () {
-
+          onTap: () async {
+            final selected = await Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => SeatPicker(initialSeats: requestedSeats),
+              ),
+            );
+            if (selected != null) {
+              setState(() {
+                requestedSeats = selected;
+              });
+            }
           },
         ),
 
@@ -166,7 +154,17 @@ class _RidePrefFormState extends State<RidePrefForm> {
           bgColor: Colors.lightBlueAccent,
           icon: Icons.search,
           onPressed: () {
-
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => RidePrefResultCard(
+                  departure: departure!,
+                  arrival: arrival!,
+                  date: departureDate,
+                  requestedSeats: requestedSeats,
+                ),
+              ),
+            );
           },
         ),
       ],
